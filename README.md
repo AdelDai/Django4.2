@@ -17,4 +17,5 @@
 Все готово теперь запускаем все в dev-режиме
 ```
 ***cd lyceum***
+
 ***python manage.py runserver***

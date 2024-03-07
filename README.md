@@ -8,10 +8,13 @@ python3 -m venv venv
 ```
 
 ## После этого ее нужно активировать:
+# (это нужно для Linux)
+ ```
+source venv/bin/activate
 ```
-source venv/bin/activate (это нужно для Linux)
-
-venv\Scripts\activate (для Windows)
+# (для Windows)
+```
+venv\Scripts\activate 
 ```
 ## Приступаем к скачивание всех необходимых библиотек (зависимости)
 

@@ -15,7 +15,9 @@
 ## Чтобы запустить проект прописываем:
 ***pip install -r  requirements.\prod.txt***
 ## Чтобы протестировать проект прописываем:
-***pip install -r  requirements\dev.txt***
+```
+pip install -r  requirements\dev.txt
+```
 ## Для разроботки проекта прописываем:
 ***pip install -r  requirements\test.txt***
 ```

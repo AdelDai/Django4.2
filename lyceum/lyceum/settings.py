@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 load_dotenv()
-DEBUG = os.getenv('DJANGO_DEBUG')
+DEBUG = os.getenv('DJANGO_DEBUG').lower() == 'true'
 
 ALLOWED_HOSTS = list(
     map(str.strip, os.getenv('DJANGO_ALLOWED_HOSTS', '*').split(','))
@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -47,11 +46,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-]
-
-INTERNAL_IPS = [
-    '127.0.0.1',
 ]
 
 ROOT_URLCONF = 'lyceum.urls'
@@ -120,7 +114,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+if DEBUG:
+    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    INTERNAL_IPS = [
+        '127.0.0.1',
+    ]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 

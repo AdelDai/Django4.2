@@ -17,16 +17,15 @@ class Item(django.db.models.Model):
         "опубликовано",
         default=True,
     )
-    name = django.db.models.CharField(
-        "название",
-        max_length=150,
-    )
+    name = django.db.models.CharField("название", max_length=150)
+    tags = models.ManyToManyField(tags =),
+
     text = django.db.models.TextField("текст", validators=[perfect_validator])
 
 
 class Tag(django.db.models.Model):
     name = django.db.models.CharField("название", max_length=150,)
-    Item = models.ManyToManyField(Item),
+    items = django.db.models.ManyToManyField(items =)
 
     is_published = django.db.models.BooleanField(
         "опубликовано",
@@ -46,8 +45,7 @@ class Category(django.db.models.Model):
         default=True,
     )
     name = django.db.models.CharField("название", max_length=150, )
-    Tag = models.ManyToManyField(Tag),
-    Item = models.ManyToManyField(Item),
+    Items = models.ManyToManyField(Items =),
 
     slug = django.db.models.SlugField(
         "Слаг",

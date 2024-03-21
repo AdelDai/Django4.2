@@ -25,7 +25,7 @@ class Item(django.db.models.Model):
 
 
 class Tag(django.db.models.Model):
-    name = django.db.models.CharField("название",max_length=150,)
+    name = django.db.models.CharField("название", max_length=150,)
     Item = models.ManyToManyField(Item),
 
     is_published = django.db.models.BooleanField(
@@ -54,7 +54,7 @@ class Category(django.db.models.Model):
         max_length=200,
         unique=True,
     )
-    weight = django.db.models.IntegerFiled(
+    weight = django.db.models.IntegerField(
         "Вес",
         default=100,
         null=True,

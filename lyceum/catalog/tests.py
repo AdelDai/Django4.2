@@ -1,9 +1,10 @@
 from http import HTTPStatus
 
+from django.core.exceptions import ValidationError
 from django.test import Client, TestCase
-
 import parameterized
 
+from .models import Category, Tag, Item
 
 class StaticURlTests(TestCase):
     def test_catalog_endpoint(self):
@@ -85,3 +86,45 @@ class StaticUrlTest(TestCase):
             expected_status,
             msg=f"/catalog/converter/{kill}/ get not {expected_status}",
         )
+
+class CatalogDBTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.category = Category(
+            name="test",
+            slug="test",
+        )
+        cls.category.full_clean()
+        cls.category.save()
+        cls.tag = Tag(
+            name="test",
+            slug="test",
+        )
+        cls.tag.full_clean()
+        cls.tag.save()
+        return super().setUpClass()
+
+    def test_add_validate_item(self):
+        item = Item(
+            name="test",
+            text="превосходно",
+            category=self.category,
+        )
+        item.full_clean()
+        item.save()
+        item.tags.add(self.tag)
+        item.full_clean()
+        item.save()
+
+    def test_add_novalidate_item(self):
+        with self.assertRaises(ValidationError):
+            item = Item(
+                name="test",
+                text="test",
+                category=self.category,
+            )
+            item.full_clean()
+            item.save()
+            item.tags.add(self.tag)
+            item.full_clean()
+            item.save()

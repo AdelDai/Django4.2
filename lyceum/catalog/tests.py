@@ -1,10 +1,11 @@
 from http import HTTPStatus
-
+from .. import catalog
 from django.core.exceptions import ValidationError
 from django.test import Client, TestCase
 import parameterized
 
 from .models import Category, Tag, Item
+
 
 class StaticURlTests(TestCase):
     def test_catalog_endpoint(self):
@@ -87,6 +88,7 @@ class StaticUrlTest(TestCase):
             msg=f"/catalog/converter/{kill}/ get not {expected_status}",
         )
 
+
 class CatalogDBTest(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -128,3 +130,95 @@ class CatalogDBTest(TestCase):
             item.tags.add(self.tag)
             item.full_clean()
             item.save()
+
+
+class DBItemTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        cls.category = catalog.models.Category.objects.create(
+            name="Test",
+        )
+        cls.tag = catalog.models.Tag.objects.create(
+            name="Test",
+        )
+
+    @parameterized.parameterized.expand(
+        [
+            ("test", "превосходно", True),
+            ("test", "роскошно", True),
+            ("test", "Я превосходно", True),
+            ("test", "превосходно Я", True),
+            ("test", "превосходно роскошно", True),
+            ("test", "роскошно!", True),
+            ("test", "!роскошно", True),
+            ("test", "!роскошно", True),
+            ("test", "роскошно©", True),
+            ("test", "превосходноН", False),
+            ("test", "превНосходно", False),
+            ("test", "Нпревосходно", False),
+            ("test", "Я превосх%одно", False),
+            ("test", "превосходнороскошно", False),
+            ("test" * 38, "превосходно", False),
+        ],
+    )
+    def test_add_item(self, name, text, is_validate):
+        item_count = catalog.models.Item.objects.count()
+        self.item = catalog.models.Item(
+            name=name,
+            text=text,
+            category=self.category,
+        )
+        if not is_validate:
+            with self.assertRaises(ValidationError):
+                self.item.full_clean()
+                self.item.save()
+                self.item.tags.add(self.tag)
+                self.item.full_clean()
+                self.item.save()
+
+            self.assertEqual(
+                catalog.models.Item.objects.count(),
+                item_count,
+                msg="add no validate item",
+            )
+        else:
+            self.item.full_clean()
+            self.item.save()
+            self.item.tags.add(self.tag)
+            self.assertEqual(
+                catalog.models.Item.objects.count(),
+                item_count + 1,
+                msg="no add validate item",
+            )
+
+    def test_add_item(self, name, text, is_validate):
+        item_count = catalog.models.Item.objects.count()
+        self.item = catalog.models.Item(
+            name=name,
+            text=text,
+            category=self.category,
+        )
+        if not is_validate:
+            with self.assertRaises(ValidationError):
+                self.item.full_clean()
+                self.item.save()
+                self.item.tags.add(self.tag)
+                self.item.full_clean()
+                self.item.save()
+
+            self.assertEqual(
+                catalog.models.Item.objects.count(),
+                item_count,
+                msg="add no validate item",
+            )
+        else:
+            self.item.full_clean()
+            self.item.save()
+            self.item.tags.add(self.tag)
+            self.assertEqual(
+                catalog.models.Item.objects.count(),
+                item_count + 1,
+                msg="no add validate item",
+            )

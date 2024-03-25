@@ -9,6 +9,7 @@ class ItemAdmin(admin.ModelAdmin):
     ]
     filter_horizontal = ["tags"]
 
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = [

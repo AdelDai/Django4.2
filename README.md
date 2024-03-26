@@ -41,7 +41,7 @@ python manage.py runserver
 ```
 python manage.py dumpdata catalog > fixtures/data.json
 ```
-#После этого нужно прописать:
+После этого нужно прописать:
 ```
 python manage.py dumpdata catalog --indent=3 > fixtures/data.json
 ```

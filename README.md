@@ -36,3 +36,12 @@ pip install -r  requirements\dev.txt
 cd lyceum
 python manage.py runserver
 ```
+
+## Если вам нужно сделать Fixture /data.json прописываем:
+```
+python manage.py dumpdata catalog > fixtures/data.json
+```
+#После этого нужно прописать:
+```
+python manage.py dumpdata catalog --indent=3 > fixtures/data.json
+```

@@ -1,10 +1,9 @@
 from http import HTTPStatus
-from .. import catalog
+
+import catalog.models
 from django.core.exceptions import ValidationError
 from django.test import Client, TestCase
 import parameterized
-
-from .models import Category, Tag, Item
 
 
 class StaticURlTests(TestCase):
@@ -89,59 +88,16 @@ class StaticUrlTest(TestCase):
         )
 
 
-class CatalogDBTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.category = Category(
-            name="test",
-            slug="test",
-        )
-        cls.category.full_clean()
-        cls.category.save()
-        cls.tag = Tag(
-            name="test",
-            slug="test",
-        )
-        cls.tag.full_clean()
-        cls.tag.save()
-        return super().setUpClass()
-
-    def test_add_validate_item(self):
-        item = Item(
-            name="test",
-            text="превосходно",
-            category=self.category,
-        )
-        item.full_clean()
-        item.save()
-        item.tags.add(self.tag)
-        item.full_clean()
-        item.save()
-
-    def test_add_novalidate_item(self):
-        with self.assertRaises(ValidationError):
-            item = Item(
-                name="test",
-                text="test",
-                category=self.category,
-            )
-            item.full_clean()
-            item.save()
-            item.tags.add(self.tag)
-            item.full_clean()
-            item.save()
-
-
 class DBItemTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
         cls.category = catalog.models.Category.objects.create(
-            name="Test",
+            name="Test Category",
         )
         cls.tag = catalog.models.Tag.objects.create(
-            name="Test",
+            name="Test Tag",
         )
 
     @parameterized.parameterized.expand(
@@ -165,18 +121,18 @@ class DBItemTests(TestCase):
     )
     def test_add_item(self, name, text, is_validate):
         item_count = catalog.models.Item.objects.count()
-        self.item = catalog.models.Item(
+        item = catalog.models.Item(
             name=name,
             text=text,
             category=self.category,
         )
         if not is_validate:
             with self.assertRaises(ValidationError):
-                self.item.full_clean()
-                self.item.save()
-                self.item.tags.add(self.tag)
-                self.item.full_clean()
-                self.item.save()
+                item.full_clean()
+                item.save()
+                item.tags.add(self.tag)
+                item.full_clean()
+                item.save()
 
             self.assertEqual(
                 catalog.models.Item.objects.count(),
@@ -184,41 +140,33 @@ class DBItemTests(TestCase):
                 msg="add no validate item",
             )
         else:
-            self.item.full_clean()
-            self.item.save()
-            self.item.tags.add(self.tag)
+            item.full_clean()
+            item.save()
+            item.tags.add(self.tag)
             self.assertEqual(
                 catalog.models.Item.objects.count(),
                 item_count + 1,
                 msg="no add validate item",
             )
 
-    def test_add_item(self, name, text, is_validate):
-        item_count = catalog.models.Item.objects.count()
-        self.item = catalog.models.Item(
-            name=name,
-            text=text,
-            category=self.category,
+    def test_add_category(self):
+        category_count = catalog.models.Category.objects.count()
+        new_category = catalog.models.Category(name="New Test Category")
+        new_category.full_clean()
+        new_category.save()
+        self.assertEqual(
+            catalog.models.Category.objects.count(),
+            category_count + 1,
+            msg="category not added",
         )
-        if not is_validate:
-            with self.assertRaises(ValidationError):
-                self.item.full_clean()
-                self.item.save()
-                self.item.tags.add(self.tag)
-                self.item.full_clean()
-                self.item.save()
 
-            self.assertEqual(
-                catalog.models.Item.objects.count(),
-                item_count,
-                msg="add no validate item",
-            )
-        else:
-            self.item.full_clean()
-            self.item.save()
-            self.item.tags.add(self.tag)
-            self.assertEqual(
-                catalog.models.Item.objects.count(),
-                item_count + 1,
-                msg="no add validate item",
-            )
+    def test_add_tag(self):
+        tag_count = catalog.models.Tag.objects.count()
+        new_tag = catalog.models.Tag(name="New Test Tag")
+        new_tag.full_clean()
+        new_tag.save()
+        self.assertEqual(
+            catalog.models.Tag.objects.count(),
+            tag_count + 1,
+            msg="tag not added",
+        )

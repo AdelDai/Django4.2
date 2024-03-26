@@ -1,7 +1,6 @@
-import django.db
-
-from django.db import models
 from django.core.exceptions import ValidationError
+import django.db
+from django.db import models
 
 
 def perfect_validator(value):

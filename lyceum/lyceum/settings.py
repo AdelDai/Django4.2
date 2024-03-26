@@ -17,7 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 DEBUG = os.getenv("DJANGO_DEBUG", "false").lower() == "true"
 
-ALLOWED_HOSTS = list(map(str.strip, os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")))
+ALLOWED_HOSTS = list(map(str.strip, os.getenv(
+    "DJANGO_ALLOWED_HOSTS", "*").split(",")))
 
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "fake")
@@ -78,22 +79,22 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation."
         "UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation." "MinimumLengthValidator",
+        "NAME": "django.contrib.auth.password_validation."
+                "MinimumLengthValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation." "CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+                "CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation." "NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+                "NumericPasswordValidator",
     },
 ]
 
